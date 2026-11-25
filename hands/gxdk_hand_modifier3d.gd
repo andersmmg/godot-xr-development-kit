@@ -59,6 +59,11 @@ extends SkeletonModifier3D
 ## Degrees to which to curl our bottom 3 fingers.
 @export_range(0.0, 90.0, 1.0, "radians_as_degrees") var grip_curl : float = deg_to_rad(70.0)
 
+## How much grip input curls our index finger along with the other fingers.
+## 0.0 leaves the index finger to the trigger only, 1.0 lets grip fully curl it
+## so that the trigger has nothing left to add.
+@export_range(0.0, 1.0, 0.01) var grip_index_weight : float = 0.5
+
 
 var _bone_names: PackedStringArray = [
 	"Palm",
@@ -157,6 +162,11 @@ func _update_on_fallback(skeleton: Skeleton3D, tracker : XRControllerTracker) ->
 		if grip_value:
 			grip = grip_value
 
+	# Grip curls our index finger along with the others, trigger curls it further,
+	# but never past what the other fingers reach on grip alone.
+	var index_grip : float = grip_curl * grip * grip_index_weight
+	var index_limit : float = maxf(grip_curl, trigger_curl)
+
 	# Now position bones
 	var bone_count = skeleton.get_bone_count()
 	for i in bone_count:
@@ -175,10 +185,10 @@ func _update_on_fallback(skeleton: Skeleton3D, tracker : XRControllerTracker) ->
 		elif bone_name == "LeftIndexDistal" or bone_name == "LeftIndexIntermediate" \
 			or bone_name == "RightIndexDistal" or bone_name == "RightIndexIntermediate":
 			var r : Transform3D
-			t = t * r.rotated(Vector3(1.0, 0.0, 0.0), trigger_curl * trigger)
+			t = t * r.rotated(Vector3(1.0, 0.0, 0.0), minf(index_limit, index_grip + trigger_curl * trigger))
 		elif bone_name == "LeftIndexProximal" or bone_name == "RightIndexProximal":
 			var r : Transform3D
-			t = t * r.rotated(Vector3(1.0, 0.0, 0.0), deg_to_rad(20.0) * trigger)
+			t = t * r.rotated(Vector3(1.0, 0.0, 0.0), minf(index_limit, index_grip + deg_to_rad(20.0) * trigger))
 		elif bone_name == "LeftMiddleDistal" or bone_name == "LeftMiddleIntermediate" or bone_name == "LeftMiddleProximal" \
 			or bone_name == "RightMiddleDistal" or bone_name == "RightMiddleIntermediate" or bone_name == "RightMiddleProximal" \
 			or bone_name == "LeftRingDistal" or bone_name == "LeftRingIntermediate" or bone_name == "LeftRingProximal" \

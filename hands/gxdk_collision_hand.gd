@@ -154,6 +154,17 @@ const ORIENT_DISPLACEMENT := 0.05
 ## Degrees to which to curl our bottom 3 fingers.
 @export_range(0.0, 90.0, 1.0, "radians_as_degrees") var grip_curl : float = deg_to_rad(70.0)
 
+## How much grip input curls our index finger along with the other fingers.
+## 0.0 leaves the index finger to the trigger only, 1.0 lets grip fully curl it
+## so that the trigger has nothing left to add.
+@export_range(0.0, 1.0, 0.01) var grip_index_weight : float = 0.5:
+	set(value):
+		grip_index_weight = 0.5 if value == null else clampf(value, 0.0, 1.0)
+		if _hand_modifier:
+			_hand_modifier.grip_index_weight = grip_index_weight
+		if _finger_pose_modifier:
+			_finger_pose_modifier.grip_index_weight = grip_index_weight
+
 ## Properties related to physics
 @export_group("Physics")
 
@@ -848,12 +859,14 @@ func _add_hand_modifiers(p_hand_mesh : Node3D) -> void:
 	_hand_modifier.trigger_curl = trigger_curl
 	_hand_modifier.grip_action = grip_action
 	_hand_modifier.grip_curl = grip_curl
+	_hand_modifier.grip_index_weight = grip_index_weight
 	skeleton_node.add_child(_hand_modifier)
 
 	# Add finger poses modifier
 	_finger_pose_modifier = GXDKFingerPosesModifier3D.new()
 	_finger_pose_modifier.finger_poses = finger_poses
 	_finger_pose_modifier.open_finger_poses = open_finger_poses
+	_finger_pose_modifier.grip_index_weight = grip_index_weight
 	skeleton_node.add_child(_finger_pose_modifier)
 
 # Find the mesh_instance node child

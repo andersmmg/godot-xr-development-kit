@@ -54,6 +54,12 @@ extends SkeletonModifier3D
 ## [b]Note[/b]: This requires [member finger_poses] and [member open_finger_poses] to be set with little, ring, and/or middle finger poses!
 @export var grip_action: String = "grip"
 
+## How much grip input curls our index finger along with the other fingers.
+## 0.0 leaves the index finger to the trigger only, 1.0 lets grip fully curl it
+## so that the trigger has nothing left to add.[br]
+## [b]Note[/b]: Only used when [member open_finger_poses] has an index finger pose.
+@export_range(0.0, 1.0, 0.01) var grip_index_weight: float = 0.5
+
 ## Editor only, test trigger value
 @export_range(0.0, 1.0, 0.01) var test_trigger: float = 1.0
 
@@ -126,6 +132,9 @@ func _process_modification() -> void:
 		trigger = test_trigger
 		grip = test_grip
 
+	# Grip curls our index finger along with the others, trigger curls it further.
+	var index_blend: float = clamp(trigger + grip * grip_index_weight, 0.0, 1.0)
+
 	# Now position bones
 	var bone_count = skeleton.get_bone_count()
 	for i in bone_count:
@@ -145,21 +154,21 @@ func _process_modification() -> void:
 			var spread: float = finger_poses.index_spread
 			var curl: float = finger_poses.index_proximal_curl
 			if open_finger_poses and open_finger_poses.index_enabled:
-				spread = lerp(open_finger_poses.index_spread, spread, trigger)
-				curl = lerp(open_finger_poses.index_proximal_curl, curl, trigger)
+				spread = lerp(open_finger_poses.index_spread, spread, index_blend)
+				curl = lerp(open_finger_poses.index_proximal_curl, curl, index_blend)
 
 			t.basis = t.basis.rotated(Vector3(0.0, 0.0, 1.0), spread * (1.0 if hand == 1 else -1.0))
 			t.basis = t.basis.rotated(Vector3(1.0, 0.0, 0.0), curl)
 		elif finger_poses.index_enabled and (bone_name == "LeftIndexIntermediate" or bone_name == "RightIndexIntermediate"):
 			var curl: float = finger_poses.index_intermediate_curl
 			if open_finger_poses and open_finger_poses.index_enabled:
-				curl = lerp(open_finger_poses.index_intermediate_curl, curl, trigger)
+				curl = lerp(open_finger_poses.index_intermediate_curl, curl, index_blend)
 
 			t.basis = t.basis.rotated(Vector3(1.0, 0.0, 0.0), curl)
 		elif finger_poses.index_enabled and (bone_name == "LeftIndexDistal" or bone_name == "RightIndexDistal"):
 			var curl: float = finger_poses.index_distal_curl
 			if open_finger_poses and finger_poses.index_enabled:
-				curl = lerp(open_finger_poses.index_distal_curl, curl, trigger)
+				curl = lerp(open_finger_poses.index_distal_curl, curl, index_blend)
 
 			t.basis = t.basis.rotated(Vector3(1.0, 0.0, 0.0), curl)
 
