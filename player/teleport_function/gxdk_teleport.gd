@@ -495,10 +495,14 @@ func _get_rotate_input() -> float:
 
 
 func _on_button_pressed(action_name):
-	if action_name == teleport_action and teleport_action_mode == 1:
-		_teleport_activate_pressed = true
-		if enabled:
-			_teleport_start()
+	if action_name != teleport_action or teleport_action_mode != 1:
+		return
+
+	if not enabled:
+		return
+
+	_teleport_activate_pressed = true
+	_teleport_start()
 
 
 func _on_button_released(action_name):
