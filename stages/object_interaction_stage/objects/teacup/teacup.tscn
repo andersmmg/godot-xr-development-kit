@@ -12,7 +12,7 @@ size = Vector3(0.09201172, 0.01, 0.037)
 
 [node name="Teacup" unique_id=413049317 instance=ExtResource("1_mo2ta")]
 
-[node name="Teacup" parent="." index="0" unique_id=81211603]
+[node name="Teacup" parent="." index="0" unique_id=401506188]
 script = ExtResource("2_i3b63")
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="Teacup" index="2" unique_id=1503548234]
@@ -31,7 +31,9 @@ metadata/_custom_type_script = "uid://xrt2jog5h0j"
 transform = Transform3D(0.32226565, 0, 0.94664925, 0, 1, 0, -0.94664925, 0, 0.32226565, 0.167, 0.008, -0.004)
 script = ExtResource("2_n457b")
 left_hand = false
+exclusive = true
 finger_poses = ExtResource("3_n457b")
+show_hand = true
 metadata/_custom_type_script = "uid://xrt2jog5h0j"
 
 [node name="SaucerSnapPoint" type="Node3D" parent="Teacup" index="5" unique_id=917603551 groups=["SnapTeacupToSaucer"]]

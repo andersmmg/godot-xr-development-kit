@@ -5,7 +5,7 @@ extends Area3D
 @export_range(0.01, 10.00, 0.01, "suffix:m/s") var water_speed: float = 0.2
 @export_range(0.01, 2.00, 0.01, "suffix:N") var water_strength: float = 0.1
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	var inv_path_transform: Transform3D
 	if path:
 		inv_path_transform = path.global_transform.inverse()

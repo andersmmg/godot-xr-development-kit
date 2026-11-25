@@ -20,13 +20,13 @@ func picked_up(by: GXDKPickup):
 	start_position = get_parent().global_transform.inverse() * by.get_controller_target().origin
 
 
-func dropped(by: GXDKPickup):
+func dropped(_by: GXDKPickup):
 	# Move joystick back to center.
 	basis = Basis()
 	changed.emit(Vector2(0.0, 0.0))
 
 
-func _xr_custom_pickup_handler(pickup: GXDKPickup, delta: float, controller_target: Transform3D, _global_target: Transform3D) -> bool:
+func _xr_custom_pickup_handler(_pickup: GXDKPickup, _delta: float, controller_target: Transform3D, _global_target: Transform3D) -> bool:
 	var local_position = get_parent().global_transform.inverse() * controller_target.origin
 	local_position -= start_position
 

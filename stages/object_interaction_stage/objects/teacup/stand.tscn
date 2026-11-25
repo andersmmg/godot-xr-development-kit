@@ -14,7 +14,7 @@ shader_parameter/specular = 0.5
 
 [node name="Stand" unique_id=1931807143 instance=ExtResource("1_v7d3l")]
 
-[node name="Stand" parent="." index="0" unique_id=240506189]
+[node name="Stand" parent="." index="0" unique_id=1886864798]
 material_override = SubResource("ShaderMaterial_mgd0s")
 
 [node name="GXDKSnapZone01" type="Node3D" parent="Stand" index="1" unique_id=1038464576]
