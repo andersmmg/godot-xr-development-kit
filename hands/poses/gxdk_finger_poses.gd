@@ -132,11 +132,11 @@ extends Resource
 func _validate_property(property: Dictionary) -> void:
 	if not thumb_enabled and property.name in [ "thumb_spread", "thumb_metacarpal_curl", "thumb_proximal_curl", "thumb_distal_curl" ]:
 		property.usage = PROPERTY_USAGE_NONE
-	elif not index_enabled and property.name in [ "index_spread", "index_metacarpal_curl", "index_proximal_curl", "index_intermediate_curl", "index_distal_curl" ]:
+	elif not index_enabled and property.name in [ "index_spread", "index_proximal_curl", "index_intermediate_curl", "index_distal_curl" ]:
 		property.usage = PROPERTY_USAGE_NONE
-	elif not middle_enabled and property.name in [ "middle_spread", "middle_metacarpal_curl", "middle_proximal_curl", "middle_intermediate_curl", "middle_distal_curl" ]:
+	elif not middle_enabled and property.name in [ "middle_spread", "middle_proximal_curl", "middle_intermediate_curl", "middle_distal_curl" ]:
 		property.usage = PROPERTY_USAGE_NONE
-	elif not ring_enabled and property.name in [ "ring_spread", "ring_metacarpal_curl", "ring_proximal_curl", "ring_intermediate_curl", "ring_distal_curl" ]:
+	elif not ring_enabled and property.name in [ "ring_spread", "ring_proximal_curl", "ring_intermediate_curl", "ring_distal_curl" ]:
 		property.usage = PROPERTY_USAGE_NONE
-	elif not little_enabled and property.name in [ "little_spread", "little_metacarpal_curl", "little_proximal_curl", "little_intermediate_curl", "little_distal_curl" ]:
+	elif not little_enabled and property.name in [ "little_spread", "little_proximal_curl", "little_intermediate_curl", "little_distal_curl" ]:
 		property.usage = PROPERTY_USAGE_NONE
