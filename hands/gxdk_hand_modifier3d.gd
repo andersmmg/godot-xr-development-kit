@@ -106,10 +106,10 @@ var _fixed_position_bones: PackedStringArray = [
 func _update_on_hand_tracker(skeleton: Skeleton3D, hand_tracker: XRHandTracker) -> void:
 	var bone_prefix = "Left" if hand_tracker.hand == XRHandTracker.TRACKER_HAND_LEFT else "Right"
 
-	var joint: int = 0
 	var middle_metacarpal_id: int = skeleton.find_bone(bone_prefix + "MiddleMetacarpal")
 	var inv_root_transform: Transform3D = hand_tracker.get_hand_joint_transform(XRHandTracker.HAND_JOINT_PALM).inverse()
-	for bone_suffix in _bone_names:
+	for joint in _bone_names.size():
+		var bone_suffix: String = _bone_names[joint]
 		var flags = hand_tracker.get_hand_joint_flags(joint)
 		if flags == 0:
 			# No tracking data for this joint.
@@ -144,8 +144,6 @@ func _update_on_hand_tracker(skeleton: Skeleton3D, hand_tracker: XRHandTracker) 
 				skeleton.set_bone_pose_rotation(bone_idx, joint_transform.basis.get_rotation_quaternion())
 			else:
 				skeleton.set_bone_pose(bone_idx, joint_transform)
-
-		joint += 1
 
 
 func _update_on_fallback(skeleton: Skeleton3D, tracker : XRControllerTracker) -> void:
