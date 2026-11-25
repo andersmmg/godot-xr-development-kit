@@ -163,6 +163,9 @@ func _update_material():
 
 
 func _set_shader_parameters():
+	if not _material:
+		return
+
 	if display_viewport:
 		_material.set_shader_parameter("albedo_texture", display_viewport.get_texture())
 

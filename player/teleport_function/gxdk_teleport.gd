@@ -122,6 +122,7 @@ var _arc_material: ShaderMaterial
 var _teleport_activate_pressed: bool = false
 var _enabled_movement_providers: Array[GXDKMovementProvider]
 var _can_teleport: bool = false
+var _teleporting: bool = false
 var _rotate_angle: float = 0.0
 #endregion
 
@@ -191,6 +192,9 @@ func _set_fade(p_value : float) -> void:
 
 # Start our teleport function.
 func _teleport_start():
+	if not _raycast:
+		return
+
 	_raycast.enabled = true
 	_arc.visible = true
 	_rotate_angle = 0.0
@@ -209,7 +213,8 @@ func _teleport_start():
 
 # Cancel our teleport function.
 func _teleport_cancel():
-	_raycast.enabled = false
+	if _raycast:
+		_raycast.enabled = false
 	_target.visible = false
 	_arc.visible = false
 
@@ -221,6 +226,8 @@ func _teleport_cancel():
 
 # Perform our teleport.
 func _do_teleport():
+	_teleporting = true
+
 	_raycast.enabled = false
 	_target.visible = false
 	_arc.visible = false
@@ -243,6 +250,8 @@ func _do_teleport():
 
 	# Reable movement providers
 	_renable_movement_providers()
+
+	_teleporting = false
 
 	teleport_done.emit()
 
@@ -281,7 +290,7 @@ func _update_arc():
 			_target_material.set_shader_parameter("albedo", can_not_color)
 			_arc_material.set_shader_parameter("albedo_color", can_not_color)
 	else:
-		basis = Basis(Vector3(-1.0, 0.0, 0.0), raycast_angle)
+		_arc.basis = Basis(Vector3(-1.0, 0.0, 0.0), raycast_angle)
 		_arc_material.set_shader_parameter("arc_length", raycast_max_distance)
 		_arc_material.set_shader_parameter("albedo_color", no_target_color)
 
@@ -423,7 +432,7 @@ func _physics_process(delta):
 		_raycast.basis = _raycast.basis.slerp(target_basis.orthonormalized(), 0.25)
 		_raycast.position = lerp(_raycast.position, global_position, 0.25)
 
-	if not enabled or not _raycast:
+	if not enabled or not _raycast or _teleporting:
 		return
 
 	var target_visible = false

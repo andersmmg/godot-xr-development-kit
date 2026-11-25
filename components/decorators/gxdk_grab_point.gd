@@ -179,7 +179,8 @@ func _update_show_hand():
 	_hand_mesh = hand_scene.instantiate()
 	add_child(_hand_mesh, false, Node.INTERNAL_MODE_BACK)
 	var _hand_mesh_mesh = _hand_mesh.find_child("*HandHumanoidMesh") as MeshInstance3D
-	_hand_mesh_mesh.material_override = preload("res://addons/godot-xr-development-kit/hands/hand_preview.material")
+	if _hand_mesh_mesh:
+		_hand_mesh_mesh.material_override = preload("res://addons/godot-xr-development-kit/hands/hand_preview.material")
 	var skeleton : Skeleton3D = _get_skeleton_node(_hand_mesh)
 	#skeleton.visible = false
 	if skeleton:

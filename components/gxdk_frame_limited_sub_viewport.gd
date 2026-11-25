@@ -56,14 +56,14 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	if target_fps == 0:
+	if target_fps <= 0:
 		return
 
 	_time_passed += delta
 	var target_time = (1.0 / float(target_fps))
 	if _time_passed >= target_time:
 		render_target_update_mode = SubViewport.UPDATE_ONCE
-		_time_passed = fmod(0.0, target_time)
+		_time_passed = fmod(_time_passed, target_time)
 
 
 # Pass through input events

@@ -63,7 +63,7 @@ signal pressed
 
 
 var time_held = 0.0
-var pressed_trigger = true
+var pressed_trigger = false
 
 var material : ShaderMaterial
 

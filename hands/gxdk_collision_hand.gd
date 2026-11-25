@@ -759,9 +759,9 @@ func _process(_delta):
 
 	# Adjust for world scale
 	var world_scale = XRServer.world_scale
-	if _ghost_mesh.visible:
+	if _ghost_mesh and _ghost_mesh.visible:
 		_ghost_mesh.scale = Vector3(world_scale, world_scale, world_scale)
-	if _hand_mesh.visible:
+	if _hand_mesh and _hand_mesh.visible:
 		_hand_mesh.scale = Vector3(world_scale, world_scale, world_scale)
 #endregion
 

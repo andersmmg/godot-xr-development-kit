@@ -167,7 +167,7 @@ func _process_modification() -> void:
 			t.basis = t.basis.rotated(Vector3(1.0, 0.0, 0.0), curl)
 		elif finger_poses.index_enabled and (bone_name == "LeftIndexDistal" or bone_name == "RightIndexDistal"):
 			var curl: float = finger_poses.index_distal_curl
-			if open_finger_poses and finger_poses.index_enabled:
+			if open_finger_poses and open_finger_poses.index_enabled:
 				curl = lerp(open_finger_poses.index_distal_curl, curl, index_blend)
 
 			t.basis = t.basis.rotated(Vector3(1.0, 0.0, 0.0), curl)
@@ -175,7 +175,7 @@ func _process_modification() -> void:
 		elif finger_poses.middle_enabled and (bone_name == "LeftMiddleProximal" or bone_name == "RightMiddleProximal"):
 			var spread: float = finger_poses.middle_spread
 			var curl: float = finger_poses.middle_proximal_curl
-			if open_finger_poses and finger_poses.middle_enabled:
+			if open_finger_poses and open_finger_poses.middle_enabled:
 				spread = lerp(open_finger_poses.middle_spread, spread, grip)
 				curl = lerp(open_finger_poses.middle_proximal_curl, curl, grip)
 
@@ -183,13 +183,13 @@ func _process_modification() -> void:
 			t.basis = t.basis.rotated(Vector3(1.0, 0.0, 0.0), curl)
 		elif finger_poses.middle_enabled and (bone_name == "LeftMiddleIntermediate" or bone_name == "RightMiddleIntermediate"):
 			var curl: float = finger_poses.middle_intermediate_curl
-			if open_finger_poses and finger_poses.middle_enabled:
+			if open_finger_poses and open_finger_poses.middle_enabled:
 				curl = lerp(open_finger_poses.middle_intermediate_curl, curl, grip)
 
 			t.basis = t.basis.rotated(Vector3(1.0, 0.0, 0.0), curl)
 		elif finger_poses.middle_enabled and (bone_name == "LeftMiddleDistal" or bone_name == "RightMiddleDistal"):
 			var curl: float = finger_poses.middle_distal_curl
-			if open_finger_poses and finger_poses.middle_enabled:
+			if open_finger_poses and open_finger_poses.middle_enabled:
 				curl = lerp(open_finger_poses.middle_distal_curl, curl, grip)
 
 			t.basis = t.basis.rotated(Vector3(1.0, 0.0, 0.0), curl)
@@ -197,7 +197,7 @@ func _process_modification() -> void:
 		elif finger_poses.ring_enabled and (bone_name == "LeftRingProximal" or bone_name == "RightRingProximal"):
 			var spread: float = finger_poses.ring_spread
 			var curl: float = finger_poses.ring_proximal_curl
-			if open_finger_poses and finger_poses.ring_enabled:
+			if open_finger_poses and open_finger_poses.ring_enabled:
 				spread = lerp(open_finger_poses.ring_spread, spread, grip)
 				curl = lerp(open_finger_poses.ring_proximal_curl, curl, grip)
 
@@ -205,13 +205,13 @@ func _process_modification() -> void:
 			t.basis = t.basis.rotated(Vector3(1.0, 0.0, 0.0), curl)
 		elif finger_poses.ring_enabled and (bone_name == "LeftRingIntermediate" or bone_name == "RightRingIntermediate"):
 			var curl: float = finger_poses.ring_intermediate_curl
-			if open_finger_poses and finger_poses.ring_enabled:
+			if open_finger_poses and open_finger_poses.ring_enabled:
 				curl = lerp(open_finger_poses.ring_intermediate_curl, curl, grip)
 
 			t.basis = t.basis.rotated(Vector3(1.0, 0.0, 0.0), curl)
 		elif finger_poses.ring_enabled and (bone_name == "LeftRingDistal" or bone_name == "RightRingDistal"):
 			var curl: float = finger_poses.ring_distal_curl
-			if open_finger_poses and finger_poses.ring_enabled:
+			if open_finger_poses and open_finger_poses.ring_enabled:
 				curl = lerp(open_finger_poses.ring_distal_curl, curl, grip)
 
 			t.basis = t.basis.rotated(Vector3(1.0, 0.0, 0.0), curl)
@@ -219,7 +219,7 @@ func _process_modification() -> void:
 		elif finger_poses.little_enabled and (bone_name == "LeftLittleProximal" or bone_name == "RightLittleProximal"):
 			var spread: float = finger_poses.little_spread
 			var curl: float = finger_poses.little_proximal_curl
-			if open_finger_poses and finger_poses.little_enabled:
+			if open_finger_poses and open_finger_poses.little_enabled:
 				spread = lerp(open_finger_poses.little_spread, spread, grip)
 				curl = lerp(open_finger_poses.little_proximal_curl, curl, grip)
 
@@ -227,13 +227,13 @@ func _process_modification() -> void:
 			t.basis = t.basis.rotated(Vector3(1.0, 0.0, 0.0), curl)
 		elif finger_poses.little_enabled and (bone_name == "LeftLittleIntermediate" or bone_name == "RightLittleIntermediate"):
 			var curl: float = finger_poses.little_intermediate_curl
-			if open_finger_poses and finger_poses.little_enabled:
+			if open_finger_poses and open_finger_poses.little_enabled:
 				curl = lerp(open_finger_poses.little_intermediate_curl, curl, grip)
 
 			t.basis = t.basis.rotated(Vector3(1.0, 0.0, 0.0), curl)
 		elif finger_poses.little_enabled and (bone_name == "LeftLittleDistal" or bone_name == "RightLittleDistal"):
 			var curl: float = finger_poses.little_distal_curl
-			if open_finger_poses and finger_poses.little_enabled:
+			if open_finger_poses and open_finger_poses.little_enabled:
 				curl = lerp(open_finger_poses.little_distal_curl, curl, grip)
 
 			t.basis = t.basis.rotated(Vector3(1.0, 0.0, 0.0), curl)

@@ -485,7 +485,8 @@ func _enter_tree():
 		parent = parent.get_parent()
 
 	_xr_origin = GXDK.get_xr_origin(self)
-	_exclude_collision_children(_xr_origin)
+	if _xr_origin:
+		_exclude_collision_children(_xr_origin)
 
 	_xr_collision_hand = GXDKCollisionHand.get_xr_collision_hand(self)
 	if _xr_collision_hand:

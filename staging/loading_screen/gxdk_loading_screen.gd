@@ -184,7 +184,7 @@ func _process(delta: float) -> void:
 	if Engine.is_editor_hint():
 		return
 
-	if follow_camera && follow_camera_enabled:
+	if follow_camera && follow_camera_enabled && follow_speed:
 		# Get the camera direction (horizontal only)
 		var camera_dir := follow_camera.global_transform.basis.z
 		camera_dir.y = 0.0
