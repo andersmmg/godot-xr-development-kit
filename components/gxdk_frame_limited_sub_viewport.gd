@@ -66,17 +66,7 @@ func _process(delta: float) -> void:
 		_time_passed = fmod(_time_passed, target_time)
 
 
-# Pass through input events
-func _input(event):
-	if Engine.is_editor_hint():
-		return
-
-	# For now we only forward key events.
-	if event is InputEventKey:
-		push_input(event)
-
-
-# Pass through input events
+# Pass through input events not handled by the main scene
 func _unhandled_input(event):
 	if Engine.is_editor_hint():
 		return

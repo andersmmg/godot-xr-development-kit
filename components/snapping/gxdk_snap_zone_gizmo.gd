@@ -27,8 +27,6 @@
 @tool
 extends EditorNode3DGizmoPlugin
 
-var start_value: float = 1.0
-
 
 func _get_gizmo_name():
 	return "GXDKSnapZone"
@@ -88,15 +86,6 @@ func _get_handle_value(gizmo, handle_id, secondary) -> Variant:
 	return snap_zone.radius
 
 
-func _begin_handle_action(gizmo, handle_id, secondary):
-	var snap_zone: GXDKSnapZone = gizmo.get_node_3d()
-	if not snap_zone:
-		start_value = 1.0
-		return
-
-	start_value = snap_zone.radius
-
-
 func _set_handle(gizmo, handle_id, secondary, camera, screen_pos):
 	var snap_zone: GXDKSnapZone = gizmo.get_node_3d()
 	if not snap_zone:
@@ -115,22 +104,18 @@ func _set_handle(gizmo, handle_id, secondary, camera, screen_pos):
 	var new_radius = (iray - snap_zone.global_position).length()
 	snap_zone.radius = new_radius
 
-	# TODO: This is working but not always redrawing the gizmo, need to figure out why
-
 
 func _commit_handle(gizmo, handle_id, secondary, restore, cancel):
 	var snap_zone: GXDKSnapZone = gizmo.get_node_3d()
-	if not snap_zone:
+	if not snap_zone or restore == null:
 		return
 
 	if cancel:
-		snap_zone.radius = start_value
+		snap_zone.radius = restore
 		return
 
-	# TODO: This does not seem to work, need to figure this out!
-	var undo_redo: UndoRedo = UndoRedo.new()
-	undo_redo.create_action("SnapZone radius changed")
+	var undo_redo: EditorUndoRedoManager = EditorInterface.get_editor_undo_redo()
+	undo_redo.create_action("Change GXDKSnapZone radius")
 	undo_redo.add_do_property(snap_zone, "radius", snap_zone.radius)
-	undo_redo.add_undo_property(snap_zone, "radius", start_value)
+	undo_redo.add_undo_property(snap_zone, "radius", restore)
 	undo_redo.commit_action()
-	undo_redo.free()

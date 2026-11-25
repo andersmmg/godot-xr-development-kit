@@ -24,6 +24,7 @@
 # SOFTWARE.
 #-------------------------------------------------------------------------------
 
+@tool
 class_name GXDKSnapZone
 extends Node3D
 
@@ -57,7 +58,12 @@ signal released(body)
 			release_captured_body()
 
 ## Radius within which we snap objects
-@export var radius: float = 0.05
+@export var radius: float = 0.05:
+	set(value):
+		radius = value
+
+		if Engine.is_editor_hint() and is_inside_tree():
+			update_gizmos()
 
 ## Optional, object to snap must be part of this group
 @export var require_group: String
@@ -155,7 +161,11 @@ func capture_node(body: PhysicsBody3D, offset: Transform3D = Transform3D()):
 
 	_captured_body = body
 	_captured_offset = offset
-	_captured_was_frozen = _captured_body.freeze
+	_captured_was_frozen = false
+
+	var rigid_body := _captured_body as RigidBody3D
+	if rigid_body:
+		_captured_was_frozen = rigid_body.freeze
 
 	# Position
 	_captured_body.global_transform = global_transform.orthonormalized() * _captured_offset
@@ -171,7 +181,8 @@ func capture_node(body: PhysicsBody3D, offset: Transform3D = Transform3D()):
 		_joint.node_b = _captured_body.get_path()
 		add_child(_joint, false, Node.INTERNAL_MODE_BACK)
 	else:
-		_captured_body.freeze = true
+		if rigid_body:
+			rigid_body.freeze = true
 
 	while parent:
 		if parent is RigidBody3D:
@@ -208,7 +219,10 @@ func release_captured_body():
 			GXDK.remove_collision_exception(parent, _captured_body)
 		parent = parent.get_parent()
 
-	_captured_body.freeze = _captured_was_frozen
+	var rigid_body := _captured_body as RigidBody3D
+	if rigid_body:
+		rigid_body.freeze = _captured_was_frozen
+
 	var was_captured = _captured_body
 	_captured_body = null
 
