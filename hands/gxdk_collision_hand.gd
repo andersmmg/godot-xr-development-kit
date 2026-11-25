@@ -328,15 +328,15 @@ func get_hand_tracker() -> XRHandTracker:
 ## Returns the pose object that handles our tracking.
 func get_pose() -> XRPose:
 	if _hand_tracker:
-		var pose : XRPose = _hand_tracker.get_pose("default")
-		if pose:
-			return pose
+		var hand_pose : XRPose = _hand_tracker.get_pose("default")
+		if hand_pose and hand_pose.has_tracking_data:
+			return hand_pose
 
 	if _controller_tracker:
 		for fallback_pose_action in fallback_pose_actions:
-			var pose : XRPose = _controller_tracker.get_pose(fallback_pose_action)
-			if pose:
-				return pose
+			var controller_pose : XRPose = _controller_tracker.get_pose(fallback_pose_action)
+			if controller_pose and controller_pose.has_tracking_data:
+				return controller_pose
 
 	return null
 
