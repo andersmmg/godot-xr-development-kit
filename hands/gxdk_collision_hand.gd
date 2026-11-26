@@ -206,6 +206,9 @@ const ORIENT_DISPLACEMENT := 0.05
 ## If [code]true[/code], we show a ghost hand if hand placement doesn't match.
 @export var enable_ghost_hand : bool = true
 
+## Distance ghost hand reaches full opacity
+@export_range(0.01, 0.25, 0.005, "suffix:m") var ghost_hand_fade_distance : float = 0.05
+
 ## Override the material of the hand
 @export var material_override : Material:
 	set(value):
@@ -265,6 +268,8 @@ var _target_offset: Transform3D
 # Hand meshes
 var _hand_mesh: Node3D
 var _ghost_mesh: Node3D
+var _ghost_material: ShaderMaterial
+var _ghost_max_alpha: float = 0.0
 var _missing_bones: PackedStringArray
 var _tween: Tween
 
@@ -357,7 +362,7 @@ func get_tracked_transform(as_global : bool = true) -> Transform3D:
 		var parent : Node3D = get_parent()
 		if parent:
 			parent_transform = parent.global_transform
-	
+
 	# Give priority to our hand tracker.
 	if _hand_tracker:
 		var pose : XRPose = _hand_tracker.get_pose("default")
@@ -417,7 +422,7 @@ func tween_hand_from_location(global_from: Transform3D, duration: float = 0.1) -
 		# And tween our hand mesh,
 		# this should animate our hand moving to where we've grabbed it
 		# while at the same time we pull our grabbed object to where our
-		# hand is tracking 
+		# hand is tracking
 		if _tween:
 			_tween.kill()
 
@@ -653,7 +658,7 @@ func _physics_process(delta):
 	var parent_transform : Transform3D = Transform3D()
 	var parent : Node3D = get_parent()
 	if parent:
-		parent_transform = parent.global_transform 
+		parent_transform = parent.global_transform
 
 	# Handle DISABLED.
 	if mode == CollisionHandMode.DISABLED:
@@ -750,12 +755,19 @@ func _process(_delta):
 	if _ghost_mesh:
 		_ghost_mesh.visible = false
 		if enable_ghost_hand:
-			if (_ghost_mesh.global_position - _hand_mesh.global_position).length() > 0.005:
+			var position_error: float = (_ghost_mesh.global_position - _hand_mesh.global_position).length()
+			var rotation_error: float = (_ghost_mesh.global_basis * _hand_mesh.global_basis.inverse()) \
+				.get_rotation_quaternion().get_angle()
+
+			# Fade in as our hand trails further behind,
+			# a barely off hand is barely visible.
+			var fade: float = maxf(
+				inverse_lerp(0.005, ghost_hand_fade_distance, position_error),
+				inverse_lerp(deg_to_rad(15.0), deg_to_rad(60.0), rotation_error)
+			)
+			if fade > 0.0:
 				_ghost_mesh.visible = true
-			else:
-				if (_ghost_mesh.global_basis * _hand_mesh.global_basis.inverse()) \
-					.get_rotation_quaternion().get_angle() > deg_to_rad(15.0):
-					_ghost_mesh.visible = true
+				_update_ghost_alpha(fade)
 
 	# Adjust for world scale
 	var world_scale = XRServer.world_scale
@@ -891,6 +903,15 @@ func _update_hand_material(p_node : Node, p_material : Material, p_cast_shadows 
 			else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 
 
+func _update_ghost_alpha(p_fade : float) -> void:
+	if not _ghost_material:
+		return
+
+	var albedo: Color = _ghost_material.get_shader_parameter("albedo")
+	albedo.a = _ghost_max_alpha * clampf(p_fade, 0.0, 1.0)
+	_ghost_material.set_shader_parameter("albedo", albedo)
+
+
 func _update_hand_meshes():
 	# Clean up old hand meshes
 	_clear_digit_collisions()
@@ -919,6 +940,7 @@ func _update_hand_meshes():
 		remove_child(_ghost_mesh)
 		_ghost_mesh.queue_free()
 		_ghost_mesh = null
+		_ghost_material = null
 
 	# Load new ones
 	var hand_scene : PackedScene
@@ -944,8 +966,11 @@ func _update_hand_meshes():
 			_ghost_mesh.top_level = true
 			add_child(_ghost_mesh)
 			_add_hand_modifiers(_ghost_mesh)
-			_update_hand_material(_ghost_mesh, \
-				preload("res://addons/godot-xr-development-kit/hands/gltf/ghost_material.tres"), false)
+
+			_ghost_material = preload("res://addons/godot-xr-development-kit/hands/gltf/ghost_material.tres").duplicate() as ShaderMaterial
+			var ghost_albedo: Color = _ghost_material.get_shader_parameter("albedo")
+			_ghost_max_alpha = ghost_albedo.a
+			_update_hand_material(_ghost_mesh, _ghost_material, false)
 
 			# We apply our modifiers to our ghost skeleton,
 			# and then copy them to our hand skeleton.
